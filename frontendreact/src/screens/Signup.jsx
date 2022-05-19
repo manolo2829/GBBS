@@ -1,7 +1,9 @@
 import Axios from 'axios'
 import {useState, useEffect} from 'react'
-import {Link} from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
+
+import Swal from 'sweetalert2'
+
 
 // damos la uri de nuestro backend
 const URI = 'http://localhost:8000/users/'
@@ -11,15 +13,32 @@ const Signup = () => {
     const [email, setEmail] = useState(null);
     const [username, setUsername] = useState(null);
     const [password, setPassword] = useState(null);
-    const [passwordConfirm, setPasswordConfirm] = useState(null);
-    const [error, setError] = useState(null);
     const navigate = useNavigate()
 
     const createUser = async (e) => {
         e.preventDefault()
         const res = await Axios.post(URI, {email: email, username: username, password: password})
-        console.log(res.data)
-        navigate('/')
+        const alert = res.data
+        if(alert.alert === true){
+            Swal.fire({
+                title: alert.alertTitle,
+                text: alert.alertMessage,
+                icon: alert.alertIcon,
+                showConfirmButton: alert.showConfirmButton,
+                timer: alert.timer
+            }).then(() => {
+                window.location = alert.ruta
+            })
+
+        }else{
+            Swal.fire({
+                title: alert.alertTitle,
+                text: alert.alertMessage,
+                icon: alert.alertIcon,
+                showConfirmButton: alert.showConfirmButton,
+                timer: alert.timer
+            })
+        }
     }
 
     return ( 

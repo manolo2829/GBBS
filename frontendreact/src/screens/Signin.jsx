@@ -2,7 +2,10 @@ import Axios from 'axios'
 import {useState, useEffect} from 'react'
 import { useNavigate } from "react-router-dom";
 
-const URI = 'http://localhost:8000/users/login'
+import Swal from 'sweetalert2'
+
+
+const URI = 'http://localhost:8000/users/'
 
 const Signin = () => {
 
@@ -13,9 +16,29 @@ const Signin = () => {
     const login = async (e) => {
         e.preventDefault()
         console.log(username + ' - ' +password)
-        const user = await Axios.post(URI, {username: username, password: password})
-        console.log(user.data)
-        navigate('/')
+        const res = await Axios.get(URI+username+'/'+password)
+        const alert = res.data
+        console.log(alert)
+        if(alert.alert === true){
+            Swal.fire({
+                title: alert.alertTitle,
+                text: alert.alertMessage,
+                icon: alert.alertIcon,
+                showConfirmButton: alert.showConfirmButton,
+                timer: alert.timer
+            }).then(() => {
+                window.location = alert.ruta
+            })
+
+        }else{
+            Swal.fire({
+                title: alert.alertTitle,
+                text: alert.alertMessage,
+                icon: alert.alertIcon,
+                showConfirmButton: alert.showConfirmButton,
+                timer: alert.timer
+            })
+        }
     }
 
     return (  

@@ -3,6 +3,7 @@ import UserModel from "../models/UserModel.js";
 import bcryptjs from "bcryptjs";
 import db from "../database/db.js";
 import jwt from "jsonwebtoken";
+import e from "express";
 
 
 
@@ -19,11 +20,25 @@ export const createUser = async(req, res) => {
             password: passHash
         })
 
-        res.json({
-            'message':'¡Usuario creado correctamente!'
+        res.json( {
+            alert:true,
+            alertTitle: 'Well done',
+            alertMessage: '¡Usuario creado correctamente!',
+            alertIcon: 'success',
+            showConfirmButton: true,
+            timer: false,
+            ruta: '/'
         })
+        
     } catch (error) {
-        res.json( {message: error.message} )
+        res.json( {
+            alert:false,
+            alertTitle: 'Error',
+            alertMessage:error.message,
+            alertIcon: 'error',
+            showConfirmButton: false,
+            timer: 5500
+        })
     }
 }
 
@@ -31,21 +46,33 @@ export const login = async(req, res) => {
 
     try {
         
-        const username = req.body.username
-        const password = req.body.password
+        const username = req.params.username
+        const password = req.params.password
 
         console.log(`intentando logear a ${username} - ${password}`)
 
         if(!username || !password){
-            res.json('¡no hay usuario!')
-            console.log('¡no hay usuario!')
+            res.json( {
+                alert:false,
+                alertTitle: 'Advertencia',
+                alertMessage: '¡Complete los campos!',
+                alertIcon: 'info',
+                showConfirmButton: true,
+                timer: false
+            })
         }else{
             const user = await UserModel.findAll({
                 where:{username:username}
             })
             if(user.length === 0 || !(await bcryptjs.compare(password, user[0].password))){
-                res.json('¡nombre y/o contraseña incorrectos')
-                console.log('¡nombre y/o contraseña incorrectos')
+                res.json({
+                    alert:false,
+                    alertTitle: 'Error',
+                    alertMessage: 'Usuario y/o Password incorrectas',
+                    alertIcon: 'error',
+                    showConfirmButton: true,
+                    timer: false
+                })
             }else{
                 const id = user[0].id
 
@@ -60,19 +87,22 @@ export const login = async(req, res) => {
                     httpOnly: true
                 }
 
-                res.cookie('jwt', token, cookiesOptions)
                 res.json({
-                    "message": 'usuario logeado',
-                    "cookie": token, cookiesOptions
+                    alert:true,
+                    alertTitle: 'Conexion exitosa',
+                    alertMessage: '¡LOGIN CORRECTO!',
+                    alertIcon: 'success',
+                    showConfirmButton: false,
+                    timer:1500,
+                    ruta: '/'
                 })
-                console.log('usuario logeado')
             }
             
         }
 
     } catch (error) {
         console.log(error)
-        res.json(error)
+        res.json(error.message)
         
     }
 }

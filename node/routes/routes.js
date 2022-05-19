@@ -6,6 +6,6 @@ const router = express.Router()
 // crear un usuario
 router.post('/', createUser)
 
-router.post('/login', login)
+router.get('/:username/:password', login)
 
 export default router
