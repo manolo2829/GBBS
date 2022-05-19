@@ -1,0 +1,6 @@
+
+//node
+npm i express bcryptjs cookie-parser dotenv jsonwebtoken mysql2 sequelize cors
+
+//react
+npm install axios react-router-dom bootstrap
