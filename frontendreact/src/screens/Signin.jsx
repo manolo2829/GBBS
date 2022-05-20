@@ -1,6 +1,8 @@
 import Axios from 'axios'
 import {useState, useEffect} from 'react'
 import { useNavigate } from "react-router-dom";
+import Cookies from 'universal-cookie';
+
 
 import Swal from 'sweetalert2'
 
@@ -11,14 +13,18 @@ const Signin = () => {
 
     const [username, setUsername] = useState(null);
     const [password, setPassword] = useState(null);
-    const navigate = useNavigate()
+    const cookies = new Cookies();
+
 
     const login = async (e) => {
         e.preventDefault()
         console.log(username + ' - ' +password)
         const res = await Axios.get(URI+username+'/'+password)
-        const alert = res.data
-        console.log(alert)
+        const alert = res.data.alert
+        const cookie = res.data.cookie
+        cookies.set(cookie.name, cookie.token, { path: '/', expires: new Date(Date.now()+ 90 * 24 * 60 * 60 * 1000 ) });
+
+        
         if(alert.alert === true){
             Swal.fire({
                 title: alert.alertTitle,
