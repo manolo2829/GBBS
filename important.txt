@@ -3,4 +3,4 @@
 npm i express bcryptjs cookie-parser dotenv jsonwebtoken mysql2 sequelize cors
 
 //react
-npm install axios react-router-dom bootstrap sweetalert2
+npm install axios react-router-dom bootstrap sweetalert2 universal-cookie

@@ -1,9 +1,9 @@
 
 import UserModel from "../models/UserModel.js";
 import bcryptjs from "bcryptjs";
-import db from "../database/db.js";
 import jwt from "jsonwebtoken";
-import e from "express";
+import {promisify} from 'util'
+
 
 
 
@@ -88,13 +88,19 @@ export const login = async(req, res) => {
                 }
 
                 res.json({
-                    alert:true,
-                    alertTitle: 'Conexion exitosa',
-                    alertMessage: '¡LOGIN CORRECTO!',
-                    alertIcon: 'success',
-                    showConfirmButton: false,
-                    timer:1500,
-                    ruta: '/'
+                    "alert": {
+                        alert:true,
+                        alertTitle: 'Conexion exitosa',
+                        alertMessage: '¡LOGIN CORRECTO!',
+                        alertIcon: 'success',
+                        showConfirmButton: false,
+                        timer:1500,
+                        ruta: '/foros'
+                    },
+                    "cookie": {
+                        name: 'jwt',
+                        token: token
+                    }
                 })
             }
             
@@ -105,4 +111,28 @@ export const login = async(req, res) => {
         res.json(error.message)
         
     }
+}
+
+
+export const inAuthUser = async(req, res, next) => {
+    if(req.params.token){
+        try {
+            const decodificada = await promisify(jwt.verify)(req.params.token, 'super_secreto')
+
+            const user = await UserModel.findAll({
+                where:{id:decodificada.id}
+            })
+
+            if(!user){return next()}
+            res.json(user[0])
+            return next()
+
+        } catch (error) {
+            res.json(false)
+            return next()
+        }
+    }
+
+    res.json(false)
+
 }

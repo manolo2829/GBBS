@@ -23,7 +23,7 @@ const Signin = () => {
         const alert = res.data.alert
         const cookie = res.data.cookie
         cookies.set(cookie.name, cookie.token, { path: '/', expires: new Date(Date.now()+ 90 * 24 * 60 * 60 * 1000 ) });
-
+        
         
         if(alert.alert === true){
             Swal.fire({

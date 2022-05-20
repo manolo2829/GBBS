@@ -5,6 +5,7 @@ import Foros from './screens/Foros';
 import Home from './screens/Home';
 import Signin from './screens/Signin';
 import Signup from './screens/Signup';
+import User from './screens/User';
 
 function App() {
   return (
@@ -15,9 +16,8 @@ function App() {
         <Route path='/signup' element={<Signup/>}></Route>
         <Route path='/signin' element={<Signin/>}></Route>
         <Route path='/foros' element={<Foros/>}></Route>
-        <Route path='/foros' element={<Foros/>}></Route>
         <Route path='/crearforo' element={<CrearForo/>}></Route>
-
+        <Route path='/user' element={<User/>}></Route>
       </Routes>
     </BrowserRouter>
   );
